@@ -1,9 +1,9 @@
 """Utility file to seed ratings database from MovieLens data in seed_data/"""
-
+from datetime import datetime
 from sqlalchemy import func
 from model import User
-# from model import Rating
-# from model import Movie
+from model import Rating
+from model import Movie
 
 from model import connect_to_db, db
 from server import app
@@ -37,9 +37,47 @@ def load_users():
 def load_movies():
     """Load movies from u.item into database."""
 
+    print "Movies"
+
+    Movie.query.delete()
+
+    for row in open("seed_data/u.item"):
+        row = row.rstrip().split("|")
+        movie_id = row[0]
+        movie_title = row[1].split("(")[0]
+        release_date = row[2]
+
+        if release_date:
+            release_date = datetime.strptime(release_date, '%d-%b-%Y')
+        else:
+            release_date = None
+
+        imdb_url = row[4]
+
+        movie = Movie(title=movie_title, movie_id=movie_id, released_at=release_date, 
+            imdb_url=imdb_url)
+
+        db.session.add(movie)
+
+    db.session.commit()
+
 
 def load_ratings():
     """Load ratings from u.data into database."""
+
+    print "Ratings"
+
+    Rating.query.delete()
+
+    for row in open("seed_data/u.data"):
+        row = row.rstrip()
+        user_id, movie_id, score, timestamp = row.split("\t")
+
+        rating = Rating(user_id=user_id, movie_id=movie_id, score=score)
+
+        db.session.add(rating)
+
+    db.session.commit()
 
 
 def set_val_user_id():
@@ -55,6 +93,32 @@ def set_val_user_id():
     db.session.commit()
 
 
+def set_val_movie_id():
+    """Set value for the next user_id after seeding database"""
+
+    # Get the Max movie_id in the database
+    result = db.session.query(func.max(Movie.movie_id)).one()
+    max_id = int(result[0])
+
+    # Set the value for the next movie_id to be max_id + 1
+    query = "SELECT setval('movies_movie_id_seq', :new_id)"
+    db.session.execute(query, {'new_id': max_id + 1})
+    db.session.commit()
+
+
+def set_val_rating_id():
+    """Set value for the next rating_id after seeding database"""
+
+    # Get the Max rating_id in the database
+    result = db.session.query(func.max(Rating.rating_id)).one()
+    max_id = int(result[0])
+
+    # Set the value for the next rating_id to be max_id + 1
+    query = "SELECT setval('ratings_rating_id_seq', :new_id)"
+    db.session.execute(query, {'new_id': max_id + 1})
+    db.session.commit()
+
+
 if __name__ == "__main__":
     connect_to_db(app)
 
@@ -66,3 +130,5 @@ if __name__ == "__main__":
     load_movies()
     load_ratings()
     set_val_user_id()
+    set_val_movie_id()
+    set_val_rating_id()

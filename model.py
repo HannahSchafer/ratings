@@ -17,6 +17,12 @@ class User(db.Model):
 
     __tablename__ = "users"
 
+    def __repr__ (self) :
+        """provides super awesome helpful, respectful representation"""
+
+        return "<Meet the user: user_id=%s email=%s>" % (self.user_id, self.email)
+
+
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     email = db.Column(db.String(64), nullable=True)
     password = db.Column(db.String(64), nullable=True)
@@ -31,13 +37,27 @@ class Movie(db.Model):
 
     __tablename__ = "movies"
 
+    def __repr__ (self):
+        """movie representation"""
+
+        return "<Great movie: movie id =%s title = %s>" % (self.movie_id, self.title)
+
     movie_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.String(64), nullable=False)
+    title = db.Column(db.String, nullable=False)
     released_at = db.Column(db.DateTime, nullable=True)
-    imdb_url = db.Column(db.String(100), nullable=True)
+    imdb_url = db.Column(db.String, nullable=True)
 
 
 class Rating(db.Model):
+
+    __tablename__ = "ratings"
+
+    def __repr__ (self):
+        """rating representation"""
+
+        return "<Ratings info: movie id=%s user id=%s score=%s>" % (self.movie_id,
+            self.user_id, self.score)
+
     rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     movie_id = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
@@ -55,6 +75,7 @@ def connect_to_db(app):
     # Configure to use our PstgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///ratings'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)
 
@@ -66,3 +87,5 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print "Connected to DB."
+
+    db.create_all() # this is not "creating the db" it is creating the tables, cols etc
