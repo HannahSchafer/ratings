@@ -44,7 +44,7 @@ def load_movies():
     for row in open("seed_data/u.item"):
         row = row.rstrip().split("|")
         movie_id = row[0]
-        movie_title = row[1].split("(")[0]
+        movie_title = row[1].split(" (")[0]
         release_date = row[2]
 
         if release_date:
