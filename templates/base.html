@@ -8,6 +8,12 @@
 </head>
 <body>
  <div class="roboto">Judgemental Eye Ratings app</div>
+ {% if session['logged_in'] == true %}
+    <p>You are logged in</p>
+ {% else %}
+    <a href="/login-form"><button>Login</button></a>
+    <a href="/registration-form"><button>Register</button></a>
+ {% endif %}
   <hr>
 
   {% block content %} put your content here {% endblock %}

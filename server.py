@@ -24,6 +24,8 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage."""
 
+    session["logged_in"] = session.get('logged_in', False)
+
     return render_template("homepage.html")
 
 @app.route('/users')
@@ -47,11 +49,12 @@ def process_registration():
     given_password = request.form.get("password")
     print given_email
 
-   
+
     existing_user = User.query.filter(User.email==given_email).first()
 
     if existing_user:
         flash("Great job! You already exist in our universe!")
+
     else:
         new_user = User(email=given_email, password=given_password)
 
@@ -61,16 +64,35 @@ def process_registration():
         # Once we're done, we should commit our work
         db.session.commit()
         flash("Great job! Welcome to our universe! Get ready to pass judgement.")
-    
-    return redirect("/")
+
+    return render_template("login_form.html")
 
 
+@app.route('/login-form')
+def show_login():
+    """Display login form."""
 
+    return render_template("login_form.html")
 
+@app.route('/login-validation')
+def check_login():
+    """Compares login info to database info."""
 
-    return given_email
+    email = request.args.get("email")
+    password = request.args.get("password")
 
+    valid_user = User.query.filter((User.email==email) & (User.password==
+                                    password)).first()
 
+    if valid_user:
+        # add state of logged-in-ness to session
+        session["logged_in"] = True
+        # redirect to '/'
+        flash("You are logged in now.")
+        return redirect("/")
+    else:
+        flash("Username and password do not match. please try again")
+        return redirect("/login-form")
 
 
 if __name__ == "__main__":
