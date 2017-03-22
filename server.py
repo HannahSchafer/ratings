@@ -2,10 +2,11 @@
 
 from jinja2 import StrictUndefined
 
-from flask import Flask, jsonify
+from flask import (Flask, jsonify, render_template, redirect, request,
+                    flash, session)
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db
+from model import connect_to_db, db, User, Rating, Movie
 
 
 app = Flask(__name__)
@@ -22,8 +23,54 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """Homepage."""
-    a = jsonify([1,3])
-    return a
+
+    return render_template("homepage.html")
+
+@app.route('/users')
+def user_list():
+    """Show list of users."""
+
+    users = User.query.all()
+    return render_template("user_list.html", users=users)
+
+@app.route('/registration-form')
+def show_registration():
+    """Show the registration form"""
+
+    return render_template("reg_form.html")
+
+@app.route('/process-registration', methods=['POST'])
+def process_registration():
+    """Check the given email against the database"""
+
+    given_email = request.form.get("email")
+    given_password = request.form.get("password")
+    print given_email
+
+   
+    existing_user = User.query.filter(User.email==given_email).first()
+
+    if existing_user:
+        flash("Great job! You already exist in our universe!")
+    else:
+        new_user = User(email=given_email, password=given_password)
+
+        # We need to add to the session or it won't ever be stored
+        db.session.add(new_user)
+
+        # Once we're done, we should commit our work
+        db.session.commit()
+        flash("Great job! Welcome to our universe! Get ready to pass judgement.")
+    
+    return redirect("/")
+
+
+
+
+
+    return given_email
+
+
 
 
 if __name__ == "__main__":

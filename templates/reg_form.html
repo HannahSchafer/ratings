@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Register below!!!!!</h1>
+
+<form action="/process-registration" method="POST">
+    tell us your soooper secret email: <input type="email" name="email"><br>
+    What is your password: <input type="password" name="password">
+    <input type="submit">
+</form>
+
+{% endblock %}
