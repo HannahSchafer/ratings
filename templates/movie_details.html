@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{{ movie.title }}
+{{ movie.released_at }}
+{{ movie.imdb_url }}
+{% for rating in ratings %}
+  <ul>{{ rating.score }}</ul>
+{% endfor %}
+
+
+{% endblock %}

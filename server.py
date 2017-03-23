@@ -33,6 +33,15 @@ def user_list():
     users = User.query.all()
     return render_template("user_list.html", users=users)
 
+
+@app.route('/movies')
+def movie_list():
+    """Shows a list of all movies ordered by title""" 
+
+    movies = Movie.query.order_by("title").all()
+    return render_template("movie_list.html", movies=movies)
+
+
 @app.route('/registration-form')
 def show_registration():
     """Show the registration form"""
@@ -114,6 +123,21 @@ def show_user_details(user_id):
     movies = [rating.movie.title for rating in ratings]
 
     return render_template("user_details.html", age=user_object.age, zipcode=user_object.zipcode, movies=movies)
+
+
+@app.route("/<movie_id>-details")
+def show_movie_details(movie_id):
+    """Shows each movie's details when specific movie clicked on.
+    title
+    released_at
+    imdb_url
+    """
+
+    movie_object = Movie.query.get(movie_id)
+    print "movie object is %s" % movie_object
+    ratings = movie_object.ratings
+
+    return render_template("movie_details.html", movie=movie_object, ratings=ratings)
 
 
 if __name__ == "__main__":
