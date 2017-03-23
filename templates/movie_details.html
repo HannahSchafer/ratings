@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 
-{{ movie.title }}
-{{ movie.released_at }}
-{{ movie.imdb_url }}
-{% for rating in ratings %}
-  <ul>{{ rating.score }}</ul>
+
+<p>title: {{ movie.title }}</p>
+<p>Released: {{ movie.released_at }}</p>
+<p><a href="{{movie.imdb_url}}">See on IMDB</a></p>
+{% for rating in ratings %}</p>
+  <ul>{{ "*" * rating.score }}</ul>
 {% endfor %}
 
 

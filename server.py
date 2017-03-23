@@ -114,7 +114,7 @@ def log_out():
     return redirect("/")
 
 
-@app.route("/<user_id>-details")
+@app.route("/user/<user_id>-details")
 def show_user_details(user_id):
     """Shows each user's details when specific user clicked on.
     """
@@ -125,7 +125,7 @@ def show_user_details(user_id):
     return render_template("user_details.html", age=user_object.age, zipcode=user_object.zipcode, movies=movies)
 
 
-@app.route("/<movie_id>-details")
+@app.route("/movie/<movie_id>-details")
 def show_movie_details(movie_id):
     """Shows each movie's details when specific movie clicked on.
     title
@@ -134,8 +134,11 @@ def show_movie_details(movie_id):
     """
 
     movie_object = Movie.query.get(movie_id)
-    print "movie object is %s" % movie_object
     ratings = movie_object.ratings
+    print "====================================="
+    print "movie object is %s" % movie_object
+
+    print "movie ratings is %s" % ratings
 
     return render_template("movie_details.html", movie=movie_object, ratings=ratings)
 
