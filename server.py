@@ -128,9 +128,7 @@ def show_user_details(user_id):
 @app.route("/movie/<movie_id>-details")
 def show_movie_details(movie_id):
     """Shows each movie's details when specific movie clicked on.
-    title
-    released_at
-    imdb_url
+
     """
 
     movie_object = Movie.query.get(movie_id)
@@ -151,11 +149,17 @@ def rate_movie():
     movie_id = request.form.get("movie_id")
     user_id = session['user_id']
 
-    rated_in_db = Rating.query.filter((movie_id == movie_id) & (user_id == user_id))
+    rated_in_db = Rating.query.filter((Rating.movie_id == movie_id), (Rating.user_id == user_id)).first()
 
+    if rated_in_db:
+        rated_in_db.score = new_rating
+    else:
+        add_rating = Rating(score=new_rating, movie_id=movie_id, user_id=user_id)
 
-    if rated_in_db.first():
-        db.session(rated_in_db).update({"Rating.score": new_rating})
+        # We need to add to the session or it won't ever be stored
+        db.session.add(add_rating)
+
+    db.session.commit()
 
 
     return redirect("/movie/%s-details" % movie_id)
