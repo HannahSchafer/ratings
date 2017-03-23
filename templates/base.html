@@ -8,8 +8,9 @@
 </head>
 <body>
  <div class="roboto">Judgemental Eye Ratings app</div>
- {% if session['logged_in'] == true %}
+ {% if 'user_id' in session.keys() %}
     <p>You are logged in</p>
+    <a href="/logged-out"><button>Log out</button></a>
  {% else %}
     <a href="/login-form"><button>Login</button></a>
     <a href="/registration-form"><button>Register</button></a>
