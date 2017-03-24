@@ -1,4 +1,18 @@
 .roboto {
     font-family: 'Roboto Slab', serif;
-    color: red;
+    color: #d6d6d6;
+    font-size: 20px;
+    letter-spacing: 2px;
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.glyphicon {
+    padding: 5px;
+}
+
+body {
+    padding: 20px;
+
 }

@@ -2,8 +2,8 @@
 {% block content %}
 
 
-<p>title: {{ movie.title }}</p>
-<p>Released: {{ movie.released_at }}</p>
+<h1>title: {{ movie.title }}</h1>
+<h2>Released: {{ movie.released_at }}</h2>
 <p><a href="{{movie.imdb_url}}">See on IMDB</a></p>
 {% if 'user_id' in session.keys() %}
     <form action="/rate-movie" method="POST">
@@ -17,7 +17,11 @@
     </form>
 {% endif %}
 {% for rating in ratings %}</p>
-  <ul>{{ "*" * rating.score }}</ul>
+  <ul>
+        {% for num in range(rating.score) %}
+        <div class='glyphicon glyphicon-star'>
+        {% endfor %}
+  </ul>
 {% endfor %}
 
 
